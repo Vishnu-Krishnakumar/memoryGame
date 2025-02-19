@@ -13,6 +13,7 @@ function App() {
   const apiUrl = 'https://pokeapi.co/api/v2/pokemon/';
 
   const hit = (e) =>{
+   status = false;
    setClick([...clicked,e.target.id])
   }
 
@@ -28,35 +29,8 @@ function App() {
     }
   }
 
-  function randomPokemon(){
-    while(randomPokeUrl.length !==8){
-      randomPokeUrl.push(getRandomInt(8)-1);
-      randomPokeUrl = randomPokeUrl.filter((value,index) => randomPokeUrl.indexOf(value) === index);
-    }
-  }
-
-  useEffect(()=>{
-    let check = clicked[clicked.length-1];
-    if(clicked.length === 1) {
-      setScore(score + 1);
-    }
-    else{
-    for(let i = 0 ; i < clicked.length-1; i++){
-      console.log(clicked[i]);
-      if(clicked[i] === check){
-        status = true;
-        console.log("Game Over, your high score is " + score);
-      }
-    }}
-    if(status === false && clicked.length > 1){
-      setScore(score + 1);
-      console.log("Your current score is " + score);
-    }
-  },[clicked])
-
-  useEffect(()=>{
-    makePokeList();
-    
+  function urlRandomizer(){
+    setImage([]);
     for(let i = 0 ; i < 8 ; i++){
       fetch(apiUrl + pokeList[i])
       .then(response =>{
@@ -71,18 +45,63 @@ function App() {
       })
       .catch(error =>{console.error(error)});
     }
+  }
+
+  function randomPokemon(){
+    while(randomPokeUrl.length !==8){
+      randomPokeUrl.push(getRandomInt(8)-1);
+      randomPokeUrl = randomPokeUrl.filter((value,index) => randomPokeUrl.indexOf(value) === index);
+    }
+  }
+
+  useEffect(()=>{
+    let check = clicked[clicked.length-1];
+    if(clicked.length === 1) {
+      setScore(1);
+    }
+    else{
+    for(let i = 0 ; i < clicked.length-1; i++){
+      console.log(clicked[i]);
+      if(clicked[i] === check){
+        status = true;
+        setScore(0);
+        setClick([]);
+      }
+    }}
+    if(status === false && clicked.length > 1){
+      setScore(score + 1);
+    }
+  },[clicked])
+
+  useEffect(()=>{
+   if (score === 8){
+    makePokeList();
+    urlRandomizer();
+    setScore(0);
+   }
+  },[score ,status])
+
+  useEffect(()=>{
+    makePokeList();
+    urlRandomizer();
   },[])
+
   randomPokemon();
   return (
-    <div className = "container">
-        <div className = "images"><img id = {randomPokeUrl[0]} onClick={hit} src={imageURL[randomPokeUrl[0]]}/></div>
-        <div className = "images"><img id = {randomPokeUrl[1]} onClick={hit} src={imageURL[randomPokeUrl[1]]}/></div>
-        <div className = "images"><img id = {randomPokeUrl[2]} onClick={hit} src={imageURL[randomPokeUrl[2]]}/></div>
-        <div className = "images"><img id = {randomPokeUrl[3]} onClick={hit} src={imageURL[randomPokeUrl[3]]}/></div>
-        <div className = "images"><img id = {randomPokeUrl[4]} onClick={hit} src={imageURL[randomPokeUrl[4]]}/></div>
-        <div className = "images"><img id = {randomPokeUrl[5]} onClick={hit} src={imageURL[randomPokeUrl[5]]}/></div>
-        <div className = "images"><img id = {randomPokeUrl[6]} onClick={hit} src={imageURL[randomPokeUrl[6]]}/></div>
-        <div className = "images"><img id = {randomPokeUrl[7]} onClick={hit} src={imageURL[randomPokeUrl[7]]}/></div>
+    <div>
+    <div className = "images">
+        <div className = "image"><img id = {randomPokeUrl[0]} onClick={hit} src={imageURL[randomPokeUrl[0]]}/></div>
+        <div className = "image"><img id = {randomPokeUrl[1]} onClick={hit} src={imageURL[randomPokeUrl[1]]}/></div>
+        <div className = "image"><img id = {randomPokeUrl[2]} onClick={hit} src={imageURL[randomPokeUrl[2]]}/></div>
+        <div className = "image"><img id = {randomPokeUrl[3]} onClick={hit} src={imageURL[randomPokeUrl[3]]}/></div>
+        <div className = "image"><img id = {randomPokeUrl[4]} onClick={hit} src={imageURL[randomPokeUrl[4]]}/></div>
+        <div className = "image"><img id = {randomPokeUrl[5]} onClick={hit} src={imageURL[randomPokeUrl[5]]}/></div>
+        <div className = "image"><img id = {randomPokeUrl[6]} onClick={hit} src={imageURL[randomPokeUrl[6]]}/></div>
+        <div className = "image"><img id = {randomPokeUrl[7]} onClick={hit} src={imageURL[randomPokeUrl[7]]}/></div>
+    </div>
+    <div>
+      Score: {score}
+    </div>
     </div>
   )
 }

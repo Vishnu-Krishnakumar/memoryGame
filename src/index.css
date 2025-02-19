@@ -34,13 +34,12 @@ h1 {
   font-size: 3.2em;
   line-height: 1.1;
 }
-.container{
+.images{
   display: flex;
   flex-wrap: wrap;
-  
-  
+
 }
-.images{
+.image{
   display: flex;
   min-width: 200px;
   min-height: 100px;
