@@ -7,13 +7,15 @@ function App() {
   const [clicked, setClick] = useState([]);
   const [score,setScore] = useState(0);
   const [imageURL, setImage] = useState([]);
-  let status = false;
+  const [ status,setStatus] = useState(false);
   let randomPokeUrl = [];
   let pokeList = [];
+  const [winner, setWinner] = useState(false);
   const apiUrl = 'https://pokeapi.co/api/v2/pokemon/';
 
   const hit = (e) =>{
-   status = false;
+   setStatus(false);
+   setWinner(false);
    setClick([...clicked,e.target.id])
   }
 
@@ -63,8 +65,7 @@ function App() {
     for(let i = 0 ; i < clicked.length-1; i++){
       console.log(clicked[i]);
       if(clicked[i] === check){
-        status = true;
-        setScore(0);
+        setStatus(true);
         setClick([]);
       }
     }}
@@ -74,10 +75,17 @@ function App() {
   },[clicked])
 
   useEffect(()=>{
-   if (score === 8){
+   if(status === true){
     makePokeList();
     urlRandomizer();
     setScore(0);
+   }
+   if (score === 8 ){
+    makePokeList();
+    urlRandomizer();
+    setScore(0);
+    setWinner(true);
+    setClick([]);
    }
   },[score ,status])
 
@@ -99,6 +107,8 @@ function App() {
         <div className = "image"><img id = {randomPokeUrl[6]} onClick={hit} src={imageURL[randomPokeUrl[6]]}/></div>
         <div className = "image"><img id = {randomPokeUrl[7]} onClick={hit} src={imageURL[randomPokeUrl[7]]}/></div>
     </div>
+    {winner &&
+    <div>You won that's amazing!</div>}
     <div>
       Score: {score}
     </div>
